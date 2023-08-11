@@ -1,0 +1,233 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>一個用python寫的lisp解釋器 | 飄夢 - Blog</title><meta name="author" content="飄夢"><meta name="copyright" content="飄夢"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="這裡是一個年更blog主_(:3」∠)_ 嘛這個語言是以全局只用一個map&#x2F;dict, 但支援閉包為目標做的   這個語言長這樣 (def x 1) (print ((fn (y) x) 1)) ; print 1 (set x (lazy (do (print &quot;x&quot;) 2))) ; 延時求值, 不可重複定義 x ; print &quot;x&quot;, return 2 x ; return 2 ("><meta property="og:type" content="article"><meta property="og:title" content="一個用python寫的lisp解釋器"><meta property="og:url" content="https://paletteovo.moe/2017/04/01/py-interp/index.html"><meta property="og:site_name" content="飄夢 - Blog"><meta property="og:description" content="這裡是一個年更blog主_(:3」∠)_ 嘛這個語言是以全局只用一個map&#x2F;dict, 但支援閉包為目標做的   這個語言長這樣 (def x 1) (print ((fn (y) x) 1)) ; print 1 (set x (lazy (do (print &quot;x&quot;) 2))) ; 延時求值, 不可重複定義 x ; print &quot;x&quot;, return 2 x ; return 2 ("><meta property="og:locale" content="en_US"><meta property="og:image" content="https://s.gravatar.com/avatar/4939943ac0df968d41fa1b02f4fd6900208401596fa22e74d3042a076bc6da3d?s=80"><meta property="article:published_time" content="2017-03-31T16:00:00.000Z"><meta property="article:modified_time" content="2023-08-11T12:28:50.543Z"><meta property="article:author" content="飄夢"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://s.gravatar.com/avatar/4939943ac0df968d41fa1b02f4fd6900208401596fa22e74d3042a076bc6da3d?s=80"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://paletteovo.moe/2017/04/01/py-interp/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload='this.media="all"'><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload='this.media="all"'><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE={title:"一個用python寫的lisp解釋器",isPost:!0,isHome:!1,isHighlightShrink:!1,isToc:!1,postUpdate:"2023-08-11 20:28:50"}</script><noscript><style type="text/css">#nav{opacity:1}.justified-gallery img{opacity:1}#post-meta time,#recent-posts time{display:inline!important}</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s.gravatar.com/avatar/4939943ac0df968d41fa1b02f4fd6900208401596fa22e74d3042a076bc6da3d?s=80" onerror='onerror=null,src="/img/friend_404.gif"' alt="avatar"></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">2</div></a></div><hr class="custom-hr"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="飄夢 - Blog"><span class="site-name">飄夢 - Blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">一個用python寫的lisp解釋器</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2017-03-31T16:00:00.000Z" title="Created 2017-04-01 00:00:00">2017-04-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-08-11T12:28:50.543Z" title="Updated 2023-08-11 20:28:50">2023-08-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Programming/">Programming</a></span></div><div class="meta-secondline"></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>這裡是一個年更blog主_(:3」∠)_</p><p>嘛這個語言是以全局只用一個map&#x2F;dict, 但支援閉包為目標做的</p><p>這個語言長這樣</p> <pre class="line-numbers language-scheme" data-language="scheme"><code class="language-scheme"><span class="token punctuation">(</span><span class="token function">def</span> x <span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token punctuation">(</span><span class="token function">print</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token function">fn</span> <span class="token punctuation">(</span><span class="token function">y</span><span class="token punctuation">)</span> x<span class="token punctuation">)</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">; print 1</span>
+<span class="token punctuation">(</span><span class="token function">set</span> x <span class="token punctuation">(</span><span class="token function">lazy</span> <span class="token punctuation">(</span><span class="token keyword">do</span> <span class="token punctuation">(</span><span class="token function">print</span> <span class="token string">"x"</span><span class="token punctuation">)</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">; 延時求值, 不可重複定義</span>
+x <span class="token comment">; print "x", return 2</span>
+x <span class="token comment">; return 2</span>
+<span class="token punctuation">(</span><span class="token function">def</span> <span class="token punctuation">(</span><span class="token function">f</span><span class="token punctuation">)</span> x<span class="token punctuation">)</span>
+<span class="token punctuation">(</span><span class="token function">def</span> <span class="token punctuation">(</span><span class="token function">g</span> x<span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token function">f</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">(</span><span class="token function">g</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token comment">; return 2, 閉包</span>
+<span class="token punctuation">(</span><span class="token function">def</span> <span class="token punctuation">(</span><span class="token function">k</span> ...<span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token builtin">apply</span> + ...<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">; 可變長參數</span>
+<span class="token punctuation">(</span><span class="token function">k</span> <span class="token number">1</span> <span class="token number">2</span> <span class="token number">3</span><span class="token punctuation">)</span> <span class="token comment">; return 6</span>
+<span class="token punctuation">(</span><span class="token function">def</span> <span class="token punctuation">(</span><span class="token function">f1</span> $expr<span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token keyword">do</span> <span class="token punctuation">(</span><span class="token function">print</span> <span class="token string">"f1"</span><span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token builtin">eval</span> expr<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">; fexpr</span>
+<span class="token punctuation">(</span><span class="token function">f1</span> <span class="token punctuation">(</span><span class="token function">print</span> <span class="token string">"f1,2"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">; print "f1", print "f1,2"</span>
+<span class="token punctuation">(</span><span class="token function">def</span> define def<span class="token punctuation">)</span> <span class="token comment">; 一切東西都是函數</span>
+<span class="token punctuation">(</span><span class="token keyword">define</span> lambda fn<span class="token punctuation">)</span>
+<span class="token punctuation">(</span><span class="token keyword">define</span> Y <span class="token punctuation">(</span><span class="token keyword">lambda</span> <span class="token punctuation">(</span><span class="token lambda-parameter">f</span><span class="token punctuation">)</span>
+           <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">lambda</span> <span class="token punctuation">(</span><span class="token lambda-parameter">u</span><span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token function">u</span> u<span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token punctuation">(</span><span class="token keyword">lambda</span> <span class="token punctuation">(</span><span class="token lambda-parameter">g</span><span class="token punctuation">)</span>
+                <span class="token punctuation">(</span><span class="token function">f</span> <span class="token punctuation">(</span><span class="token keyword">lambda</span> <span class="token punctuation">(</span><span class="token lambda-parameter">x</span><span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token function">g</span> g<span class="token punctuation">)</span> x<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token function">Y</span> <span class="token punctuation">(</span><span class="token keyword">lambda</span> <span class="token punctuation">(</span><span class="token lambda-parameter">f</span><span class="token punctuation">)</span>
+        <span class="token punctuation">(</span><span class="token keyword">lambda</span> <span class="token punctuation">(</span><span class="token lambda-parameter">x</span><span class="token punctuation">)</span>
+            <span class="token punctuation">(</span><span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">=</span> x <span class="token number">0</span><span class="token punctuation">)</span>
+                <span class="token number">1</span>
+                <span class="token punctuation">(</span><span class="token operator">*</span> x <span class="token punctuation">(</span><span class="token function">f</span> <span class="token punctuation">(</span><span class="token operator">-</span> x <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+ <span class="token number">5</span><span class="token punctuation">)</span> <span class="token comment">; return 120</span>
+<span class="token punctuation">(</span><span class="token builtin">eval</span> <span class="token punctuation">'</span><span class="token punctuation">(</span>print <span class="token string">"\n"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">; print new line ; Quote</span>
+<span class="token punctuation">(</span><span class="token operator">+</span> <span class="token number">0.1</span> <span class="token number">0.2</span><span class="token punctuation">)</span> <span class="token comment">; return 0.30000000000000004 ;)</span>
+<span class="token punctuation">(</span><span class="token function">def</span> <span class="token punctuation">(</span><span class="token function">pwr</span> b p<span class="token punctuation">)</span> <span class="token comment">; 快速幂</span>
+  <span class="token punctuation">(</span><span class="token keyword">do</span>
+    <span class="token punctuation">(</span><span class="token function">def</span> ans <span class="token number">1</span><span class="token punctuation">)</span>
+    <span class="token punctuation">(</span><span class="token function">while</span> <span class="token punctuation">(</span><span class="token function">!=</span> p <span class="token number">0</span><span class="token punctuation">)</span>
+           <span class="token punctuation">(</span><span class="token keyword">do</span>
+             <span class="token punctuation">(</span><span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">=</span> <span class="token punctuation">(</span><span class="token function">&amp;</span> p <span class="token number">1</span><span class="token punctuation">)</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token comment">; 位運算</span>
+                 <span class="token punctuation">(</span><span class="token function">set</span> ans <span class="token punctuation">(</span><span class="token operator">*</span> ans b<span class="token punctuation">)</span><span class="token punctuation">)</span>
+                 <span class="token punctuation">)</span>
+             <span class="token punctuation">(</span><span class="token function">set</span> b <span class="token punctuation">(</span><span class="token operator">*</span> b b<span class="token punctuation">)</span><span class="token punctuation">)</span>
+             <span class="token punctuation">(</span><span class="token function">set</span> p <span class="token punctuation">(</span><span class="token function">shr</span> p <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+             <span class="token punctuation">)</span>
+           <span class="token punctuation">)</span>
+    ans
+    <span class="token punctuation">)</span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">(</span><span class="token function">pwr</span> <span class="token number">3</span> <span class="token number">6</span><span class="token punctuation">)</span> <span class="token comment">; return 729</span>
+<span class="token comment">;快排</span>
+  <span class="token punctuation">(</span><span class="token function">def</span> <span class="token punctuation">(</span><span class="token function">quicksort</span> lst<span class="token punctuation">)</span>
+    <span class="token punctuation">(</span><span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">=</span> <span class="token punctuation">(</span><span class="token function">.</span> lst __len__<span class="token punctuation">)</span> <span class="token number">0</span><span class="token punctuation">)</span>
+        <span class="token punctuation">'</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">(</span><span class="token keyword">let</span> <span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token function">frist</span> <span class="token punctuation">(</span><span class="token function">.</span> lst __getitem__ <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+             <span class="token punctuation">[</span><span class="token function">rest</span> <span class="token punctuation">(</span><span class="token function">split</span> lst <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token punctuation">(</span><span class="token operator">+</span> <span class="token punctuation">(</span><span class="token function">quicksort</span> <span class="token punctuation">(</span><span class="token function">filter</span> <span class="token punctuation">(</span><span class="token function">fn</span> <span class="token punctuation">(</span><span class="token function">x</span><span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token operator">&lt;</span> x frist<span class="token punctuation">)</span><span class="token punctuation">)</span> rest<span class="token punctuation">)</span><span class="token punctuation">)</span>
+       <span class="token punctuation">'</span><span class="token punctuation">(</span>,<span class="token punctuation">(</span><span class="token keyword">do</span> frist<span class="token punctuation">)</span><span class="token punctuation">)</span>
+       <span class="token punctuation">(</span><span class="token function">quicksort</span> <span class="token punctuation">(</span><span class="token function">filter</span> <span class="token punctuation">(</span><span class="token function">fn</span> <span class="token punctuation">(</span><span class="token function">x</span><span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token operator">>=</span> x frist<span class="token punctuation">)</span><span class="token punctuation">)</span> rest<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">)</span>
+  <span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">(</span><span class="token function">quicksort</span> <span class="token punctuation">'</span><span class="token punctuation">(</span><span class="token number">5</span> <span class="token number">4</span> <span class="token number">46</span> <span class="token number">465</span> <span class="token number">1</span> <span class="token number">8</span> <span class="token number">58</span> <span class="token number">5</span> <span class="token number">41</span> <span class="token number">81</span> <span class="token number">6</span> <span class="token number">84</span> <span class="token number">1</span> <span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token comment">; return '(1, 1, 4, 5, 5, 6, 8, 8, 41, 46, 58, 81, 84, 465)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>語法大概就長這個樣子, 功能上面也說得差不多了, 說說技術細節..</p>
+<p>思路就是,</p>
+<p>根作用域是一個None</p>
+<p>每多一層作用域, 就把一個全局變量scopeID加1, 而下一層作用域就會是(scopeID, scope), 組成一個鏈表表示作用域篏套</p>
+<p>而儲存&#x2F;讀取變量時用作用域來識別要取的變量</p>
+<p>函數閉包就直接保存作用域鏈表, 要儲存&#x2F;讀取變量時, 直接用鏈表就可以讀取到創建環境的變量了</p>
+<p>雖然但是, 這方法不能防止在外部變量改變時，閉包變量也會改變，類似 copy by reference 但我在scheme下測試</p>
+<pre class="line-numbers language-none"><code class="language-none">(define x 1)
+(define (f) x)
+(define x 2)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre> <p>(f) 是回傳 2 的…所以大概也不是甚麼大問題</p></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="https://paletteovo.moe">飄夢</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="https://paletteovo.moe/2017/04/01/py-interp/">https://paletteovo.moe/2017/04/01/py-interp/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"></div></div><hr class="custom-hr"><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> Comment</span></div></div><div class="comment-wrap"><div><div id="disqus_thread"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s.gravatar.com/avatar/4939943ac0df968d41fa1b02f4fd6900208401596fa22e74d3042a076bc6da3d?s=80" onerror='this.onerror=null,this.src="/img/friend_404.gif"' alt="avatar"></div><div class="author-info__name">飄夢</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/paletteOvO"><i class="fab fa-github"></i><span>GitHub</span></a></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/03/25/linux-locale-settings/" title="Linux 系統下關於Locale設定的全記錄(持續更新)">Linux 系統下關於Locale設定的全記錄(持續更新)</a><time datetime="2022-03-24T16:00:00.000Z" title="Created 2022-03-25 00:00:00">2022-03-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/03/19/intel-nvidia-dual-gpu-overclock/" title="Intel/NVIDIA 同時使用集顯+獨顯及超頻">Intel/NVIDIA 同時使用集顯+獨顯及超頻</a><time datetime="2022-03-18T16:00:00.000Z" title="Created 2022-03-19 00:00:00">2022-03-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/11/05/webm-hardware-acceleration/" title="WebM的超高CPU佔用問題 (Firefox/Chrome/WallpaperEngine)">WebM的超高CPU佔用問題 (Firefox/Chrome/WallpaperEngine)</a><time datetime="2021-11-04T16:00:00.000Z" title="Created 2021-11-05 00:00:00">2021-11-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2021/10/16/wsl2-port-reserved/" title="WSL2/Hyper-V 端口佔用的 Workaround">WSL2/Hyper-V 端口佔用的 Workaround</a><time datetime="2021-10-15T16:00:00.000Z" title="Created 2021-10-16 00:00:00">2021-10-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2019/07/14/microg-playstore/" title="microG/NanoDroid 的 基本設置">microG/NanoDroid 的 基本設置</a><time datetime="2019-07-13T16:00:00.000Z" title="Created 2019-07-14 00:00:00">2019-07-14</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 飄夢</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><a id="to_comment" href="#post-comment" title="Scroll To Comments"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>function loadDisqus () {
+  const disqus_config = function () {
+    this.page.url = 'https://paletteovo.moe/2017/04/01/py-interp/'
+    this.page.identifier = '/2017/04/01/py-interp/'
+    this.page.title = '一個用python寫的lisp解釋器'
+  }
+
+  const disqusReset = () => {
+    DISQUS.reset({
+      reload: true,
+      config: disqus_config
+    })
+  }
+
+  btf.addModeChange('disqus', disqusReset)
+
+  if (window.DISQUS) disqusReset()
+  else {
+    (function() { 
+      var d = document, s = d.createElement('script');
+      s.src = 'https://manhong2112.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  }
+}
+
+if ('Disqus' === 'Disqus' || !true) {
+  if (true) btf.loadComment(document.getElementById('disqus_thread'), loadDisqus)
+  else loadDisqus()
+} else {
+  function loadOtherComment () {
+    loadDisqus()
+  }
+}</script></div></div></body></html>
