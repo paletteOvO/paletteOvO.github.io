@@ -1,0 +1,119 @@
+<div><button id="clear">clear</button> <button id="draw">draw</button></div><canvas style="transform:scale(.5) translate(-50%,-50%)"></canvas><script>const config = {
+   THICKNESS: 0.2,
+   SIZE: 480 / 0.5,
+   LENGTH: 32,
+   SMOOTHNESS: 0.95,
+   STEP_DISTANCE: 64,
+   V_RANGE: 150,
+}
+const DEBUG = false;
+
+
+const Log = {
+   d: (...arguments) => DEBUG ? console.debug("D>", ...arguments) : undefined,
+   w: (...arguments) => console.warn("W>", ...arguments)
+}
+
+const relu = (x) => x < 0 ? 0 : x;
+const f = (n, k) => n * Math.abs(n) * k
+
+const canvas = document.querySelector("canvas")
+canvas.width = config.SIZE
+canvas.height = config.SIZE
+const ctx = canvas.getContext("2d")
+ctx.filter = "blur(1px)"
+ctx.lineCap = "round";
+
+const generateNextPosition = (p, k) => {
+   // v = p.v +/- 90
+   let f_result = f(Math.random() - 0.5, k);
+   Log.d("f_result = " + f_result)
+   let v = ((p.v + config.V_RANGE * f_result) + 360) % 360
+   Log.d("v_deg = " + v)
+   if(p.x <config. SIZE / 16) {
+      // +- 90
+      v = (v + 18 * f(Math.random() - 0.5, 1 + p.x / config.SIZE) + 360) % 360
+   }
+   if(p.y < config.SIZE / 16) {
+      v = (v + 18 * f(Math.random(), 1 + p.y / config.SIZE) + 360) % 360
+   }
+   if(p.x > config.SIZE - config.SIZE / 16) {
+      v = (v + 18 * f(Math.random() + 0.5, 1 + (config.SIZE - p.x) / config.SIZE) + 360) % 360
+   }
+   if(p.y > config.SIZE - config.SIZE / 16) {
+      v = (v + 18 * f(Math.random() + 1, 1 + (config.SIZE - p.y) / config.SIZE) + 360) % 360
+   }
+   return {
+      x: p.x + p.d * Math.sin(v * Math.PI / 180),
+      y: p.y + p.d * Math.cos(v * Math.PI / 180),
+      v: v,
+      d: p.d
+   }
+}
+
+const clear = () => {
+   ctx.clearRect(0, 0, config.SIZE, config.SIZE);
+}
+
+const draw = () => {
+   let _dyn_smoothness = config.SMOOTHNESS;
+   ctx.lineWidth = config.THICKNESS;
+   ctx.beginPath();
+   let p = {
+      // div 1.1 to prevent start point too close to edge
+      x: config.SIZE / 2 + (Math.random() - 0.5) * config.SIZE / 1.1,
+      y: config.SIZE / 2 + (Math.random() - 0.5) * config.SIZE / 1.1,
+      v: Math.random() * 360,
+      d: config.STEP_DISTANCE,
+   }
+   while(p.x < 0 || p.x > config.SIZE || p.y < 0 || p.y > config.SIZE) {
+      Log.w("it shouldn't happend, but let just re-init a new one")
+      p.x = SIZE / 2 + (Math.random() - 0.5) * config.SIZE / 1.1
+      p.y = SIZE / 2 + (Math.random() - 0.5) * config.SIZE / 1.1
+   }
+   ctx.moveTo(p.x, p.y);
+   var old_p = p;
+   var count = 0;
+   for(;count < config.LENGTH;) {
+      let _p = generateNextPosition(p, 2);
+      if(_p.x < 0 || _p.x > config.SIZE || _p.y < 0 || _p.y > config.SIZE) {
+         // clearInterval(i)
+         count += 1;
+         Log.d("Failed next position: ", _p)
+         continue;
+      }
+      p = _p;
+      if(Math.random() > _dyn_smoothness) {
+         _dyn_smoothness = config.SMOOTHNESS + config.SMOOTHNESS - _dyn_smoothness;
+         count += 1
+         var xc = (old_p.x + p.x) / 2;
+         var yc = (old_p.y + p.y) / 2;
+         ctx.quadraticCurveTo(old_p.x, old_p.y, xc, yc);
+         ctx.stroke();
+         Log.d(p)
+         old_p = p;
+      } else {
+         _dyn_smoothness -= 0.1
+      }
+   }
+   // make last segment as black as previous
+   ctx.stroke();
+   ctx.stroke();
+   ctx.stroke();
+   ctx.stroke();
+   ctx.stroke();
+   ctx.stroke();
+   ctx.stroke();
+   ctx.stroke();
+}
+
+clear()
+draw()
+
+document.querySelector('#clear').onclick = function(e){
+  clear()
+}
+
+document.querySelector('#draw').onclick = function(e){
+  draw()
+}</script>
