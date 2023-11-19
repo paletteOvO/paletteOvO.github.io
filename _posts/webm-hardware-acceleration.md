@@ -15,8 +15,8 @@ categories: Programming
 5. 安裝微軟的 VP9解碼擴展 (Get VP9 Video Extensions - Microsoft Store)[https://www.microsoft.com/en-us/p/vp9-video-extensions/9n4d0msmp0pt?activetab=pivot:overviewtab]
 6. 摸摸你家可愛的小貓
 7. 現在你應該可以看到你的 GPU 終於不是 0% 佔用了
-   [Before](webm-hardware-acceleration/Snipaste_2021-11-04_03-24-01.png)
-   [After](webm-hardware-acceleration/Snipaste_2021-11-04-03-25-42.png)
+   [Before](example.png)
+   [After](example.png)
    如果你不成功，可以留言和我說說，我可能也可能不會看。
 
 ## 0x0 前言
