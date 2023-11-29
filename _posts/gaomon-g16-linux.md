@@ -75,7 +75,7 @@ Json在Linux下放到`~/.config/OpenTabletDriver/Configurations/`即可, Windows
 同時在OTD內不進行任何映射。
 ![](gaomon-g16-linux/image.png)
 分屏的配置
-![](gaomon-g16-linux/image.png)
+![](gaomon-g16-linux/image2.png)
 
 ## 0x3 總結
 
