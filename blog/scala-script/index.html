@@ -5,8 +5,8 @@
 <p>對於編譯其實沒有甚麼辦法，畢竟我菜。上網搜索了一會發現雖然有不少增量編譯等等，但似乎都是基於 sbt 等建構工具，一般都給大項目才能用，對腳本來說貌似意義不大。</p>
 <h2>Dotty</h2>
 <p>再找找吧，發現 Scala 好像要出一個 Dotty 的編譯器，聽說編譯速度快了 20%？蚊子再小也是肉，趕緊下載一個來試試。<br>嗯，所以要怎麼用呢，dotc 在哪裡，好像沒有 dotc.bat,好像不支持 Windows 。繼續搜搜，找到了大佬翻譯的 Windows 版的 Link，不錯。</p>
-<p>下載，編譯，崩潰，一氣呵成。<br><img loading="lazy" decoding="async" data-blurhash="U48NR%~CR%Rj^+nit7ozu4S~%Mxa?bWBR*jZ" width="598" height="176" data-src="/_posts/./scala-script/Snipaste_2020-02-15_10-21-35.png?blurhash=U48NR%25~CR%25Rj%5E%2Bnit7ozu4S~%25Mxa%3FbWBR*jZ&width=598&height=176"   /></p>
-<p>一看，原來 Dotty 改了不少格式，我都還沒開始學 Scala 2 就已經過氣了嗎。<br>改了改，總算過了編譯，運行，崩潰，哦吼。<br><img loading="lazy" decoding="async" data-blurhash="U5AdAt~q00Ri%Mt7%Mxu4nWB-;xa?bM{M{t7" width="567" height="175" data-src="/_posts/./scala-script/Snipaste_2020-02-15_10-26-15.png?blurhash=U5AdAt~q00Ri%25Mt7%25Mxu4nWB-%3Bxa%3FbM%7BM%7Bt7&width=567&height=175"   /></p>
+<p>下載，編譯，崩潰，一氣呵成。<br><img loading="lazy" decoding="async" data-blurhash="U48NR%~CR%Rj^+nit7ozu4S~%Mxa?bWBR*jZ" width="598" height="176" data-src="/_posts/scala-script/Snipaste_2020-02-15_10-21-35.png?blurhash=U48NR%25~CR%25Rj%5E%2Bnit7ozu4S~%25Mxa%3FbWBR*jZ&width=598&height=176"   /></p>
+<p>一看，原來 Dotty 改了不少格式，我都還沒開始學 Scala 2 就已經過氣了嗎。<br>改了改，總算過了編譯，運行，崩潰，哦吼。<br><img loading="lazy" decoding="async" data-blurhash="U5AdAt~q00Ri%Mt7%Mxu4nWB-;xa?bM{M{t7" width="567" height="175" data-src="/_posts/scala-script/Snipaste_2020-02-15_10-26-15.png?blurhash=U5AdAt~q00Ri%25Mt7%25Mxu4nWB-%3Bxa%3FbM%7BM%7Bt7&width=567&height=175"   /></p>
 <p>這甚麼，初始化崩潰？NPE?這玩意初始化時都干了甚麼？仔細想了想，有差別的地方可能是因為直接繼承了 App 而不寫 main 了？改改，過了，可是為甚麼呢？</p>
 <p>簡單推測一下，估計是 class 初始化時 args 還沒有被初始化，然後不知為甚麼(大概是 bug 吧)執行了本應該在 main 裡才執行的 parseArgs。然後就 NPE 了。</p>
 <h2>增量編譯 (?)</h2>
