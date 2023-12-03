@@ -93,15 +93,15 @@ LC_ALL=
 
 ## 0x4 其它軟件
 
-- .desktop 等啟動程序可能會包含 LANG 等變量
-- kitty 會自行重置 LANG 等變量
-- KDE 會自行重置`$HOME/.config/plasma-localerc`
+-  .desktop 等啟動程序可能會包含 LANG 等變量
+-  kitty 會自行重置 LANG 等變量
+-  KDE 會自行重置`$HOME/.config/plasma-localerc`
 
 ## 0x5 fcitx5/rime
 
-- 如果遇到奇怪的問題，可以看看 fcitx5-qt fcitx5-gtk 有沒有裝
-- 指令行部署 `rime_deployer --build ~/.local/share/fcitx5/rime/ /usr/share/rime-data ~/.local/share/fcitx5/rime/build`
-- 輸入法設置[https://wiki.archlinux.org/title/Fcitx5\_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)](<https://wiki.archlinux.org/title/Fcitx5_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)>)
+-  如果遇到奇怪的問題，可以看看 fcitx5-qt fcitx5-gtk 有沒有裝
+-  指令行部署 `rime_deployer --build ~/.local/share/fcitx5/rime/ /usr/share/rime-data ~/.local/share/fcitx5/rime/build`
+-  輸入法設置[https://wiki.archlinux.org/title/Fcitx5\_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)](<https://wiki.archlinux.org/title/Fcitx5_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)>)
 
 ```bash
 export GTK_IM_MODULE=fcitx
@@ -117,13 +117,13 @@ export XMODIFIERS=@im=fcitx
 
 在 KDE wayland 下要支持各種 electron 和 qt/gtk 軟件需要由 kwin 打開 fcitx 並配置 kcm
 
-- 配置虛擬鍵盤
-  －　![2023-08-11.1691748894.png](2023-08-11.1691748894.png)
+-  配置虛擬鍵盤
+   －　![2023-08-11.1691748894.png](2023-08-11.1691748894.png)
 
 參考資料
 
-- https://www.csslayer.info/wordpress/linux/use-plasma-5-24-to-type-in-alacritty-or-any-other-text-input-v3-client-with-fcitx-5-on-wayland/
-- https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland
+-  https://www.csslayer.info/wordpress/linux/use-plasma-5-24-to-type-in-alacritty-or-any-other-text-input-v3-client-with-fcitx-5-on-wayland/
+-  https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland
 
 ## 0x7 後記和個人設置
 
@@ -135,4 +135,4 @@ export XMODIFIERS=@im=fcitx
 
 ## 0x8 changelog
 
-- 2023-08-11 更新 kde wayland 下的 fcitx5 配置
+-  2023-08-11 更新 kde wayland 下的 fcitx5 配置

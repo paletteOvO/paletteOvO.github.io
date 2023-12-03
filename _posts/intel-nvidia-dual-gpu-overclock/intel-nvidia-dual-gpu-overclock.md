@@ -11,7 +11,7 @@ categories: Programming
 
 ## 0x1 啟用集顯
 
-在我電腦上如果插上了顯卡的話集顯是默認關閉的，需要在BIOS裡啟用然後指定是集顯輸出，當然線也要插到主板的插口上。這邊就自己找找吧，不附圖了，基本上是寫着IGFX，集成顯卡，之類的，一個個翻翻看。
+在我電腦上如果插上了顯卡的話集顯是默認關閉的，需要在 BIOS 裡啟用然後指定是集顯輸出，當然線也要插到主板的插口上。這邊就自己找找吧，不附圖了，基本上是寫着 IGFX，集成顯卡，之類的，一個個翻翻看。
 
 ## 0x2 安裝/啟用驅動
 
@@ -29,9 +29,9 @@ MODULES=(i915 nvidia nvidia_modeset nvidia_uvm nvidia_drm)
 $ sudo mkinitcpio -P
 ```
 
-## 0x3 xorg設定集顯和獨顯
+## 0x3 xorg 設定集顯和獨顯
 
-記下pci bus id
+記下 pci bus id
 
 ```bash
 $ lspci
@@ -95,8 +95,8 @@ Section "Screen"
 EndSection
 ```
 
-
 ## 0x4 超頻
+
 ```bash
 $ sudo pacman -S nvidia-utils
 $ sudo nvidia-smi -i 0 -pl 120 # powerlimit, 限制功耗
