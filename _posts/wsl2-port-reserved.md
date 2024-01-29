@@ -4,7 +4,8 @@ pub_date: 2021-10-16
 tags: [WSL, WSL2]
 categories: Programming
 ---
-由於WSL2啟動後會佔用一大片 port 導致雖然完全沒有在用但就是 bind 不了，而且每次重開機都不一樣, 這裡記錄一個 workaround。
+
+由於 WSL2 啟動後會佔用一大片 port 導致雖然完全沒有在用但就是 bind 不了，而且每次重開機都不一樣, 這裡記錄一個 workaround。
 
 ```powershell
 # 以管理員模式運行
